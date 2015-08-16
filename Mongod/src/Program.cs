@@ -27,16 +27,18 @@ namespace Mongod
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("test");
-            var collectionUsed = databaseUsed.GetCollection<Person>("people");
-                      
-            var list = await collectionUsed.Find(new BsonDocument())
-                .Project(x => x.Name)                
-                .ToListAsync();
+            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("widgets");
+            await databaseUsed.DropCollectionAsync("widgets");
 
-            foreach (var doc in list)
-            {
-                Console.WriteLine(doc);
-            }           
+            var docs = Enumerable.Range(0, 10).Select(i => new BsonDocument("_id", i).Add("x", i));
+
+            await collectionUsed.InsertManyAsync(docs);
+
+            var result = await collectionUsed.ReplaceOneAsync(
+                new BsonDocument("_id", 5), 
+                new BsonDocument("_id", 5).Add("x", 30));
+
+            await collectionUsed.Find(new BsonDocument()).ForEachAsync(x => Console.WriteLine(x));
             
         }
 
