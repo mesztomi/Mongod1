@@ -17,7 +17,7 @@ namespace Mongod
         static void Main(string[] args)
         {
             MainAsync(args).GetAwaiter().GetResult();
-            Console.ReadLine();
+            
             Console.WriteLine("Press Enter!");
             Console.ReadLine();
         }
@@ -30,8 +30,7 @@ namespace Mongod
             var collectionUsed = databaseUsed.GetCollection<Person>("people");
                       
             var list = await collectionUsed.Find(new BsonDocument())
-                .SortBy(x => x.Age)
-                //.ThenByDescending(x => x.Name)
+                .Project(x => x.Name)                
                 .ToListAsync();
 
             foreach (var doc in list)
