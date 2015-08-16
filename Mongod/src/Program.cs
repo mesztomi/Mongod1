@@ -28,16 +28,14 @@ namespace Mongod
             var databaseUsed = client.GetDatabase("test");
             var collectionUsed = databaseUsed.GetCollection<BsonDocument>("people");
 
-            using (var cursor = await collectionUsed.Find(new BsonDocument()).ToCursorAsync())
+            var list = await collectionUsed.Find(new BsonDocument()).ToListAsync();
+
+            foreach (var doc in list)
             {
-                while(await cursor.MoveNextAsync())
-                {
-                    foreach (var doc in cursor.Current)
-                    {
-                        Console.WriteLine(doc);
-                    }
-                }
-            };
+                Console.WriteLine(doc);
+            }
+
+           
             
         }
 
