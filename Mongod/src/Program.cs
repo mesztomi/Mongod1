@@ -27,11 +27,8 @@ namespace Mongod
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("test");
             var collectionUsed = databaseUsed.GetCollection<Person>("people");
-
-            var builder = Builders<Person>.Filter;
-            var filter = builder.Lt(x => x.Age, 30) & builder.Eq(x => x.Name, "Peter");
-
-            var list = await collectionUsed.Find(filter).ToListAsync();
+                      
+            var list = await collectionUsed.Find(x => x.Age < 30 && x.Name == "Peter").ToListAsync();
 
             foreach (var doc in list)
             {
