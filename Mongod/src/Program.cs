@@ -16,8 +16,7 @@ namespace Mongod
         
         static void Main(string[] args)
         {
-            MainAsync(args).GetAwaiter().GetResult();
-            Console.WriteLine();
+            MainAsync(args).Wait();            
             Console.WriteLine("Press Enter!");
             Console.ReadLine();
         }
@@ -27,16 +26,18 @@ namespace Mongod
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("test");
-            var collectionUsed = databaseUsed.GetCollection<Person>("people");
+            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("people");
 
-            var doc = new Person
+            using (var cursor = await collectionUsed.Find(new BsonDocument()).ToCursorAsync())
             {
-                Name = "Gerzson" ,
-                Age = 31,
-                Profession = "hacker"
-            };         
-
-            await collectionUsed.InsertOneAsync(doc);
+                while(await cursor.MoveNextAsync())
+                {
+                    foreach (var doc in cursor.Current)
+                    {
+                        Console.WriteLine(doc);
+                    }
+                }
+            };
             
         }
 

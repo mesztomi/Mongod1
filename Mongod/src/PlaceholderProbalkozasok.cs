@@ -68,5 +68,25 @@ namespace Mongod.src
             await collectionUsed.InsertOneAsync(doc);
 
         }
+
+        static async Task MainAsync3(string[] args)
+        {
+            var connectionString = "mongodb://localhost:27017";
+            var client = new MongoClient(connectionString);
+            var databaseUsed = client.GetDatabase("test");
+            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("people");
+
+            using (var cursor = await collectionUsed.Find(new BsonDocument()).ToCursorAsync())
+            {
+                while (await cursor.MoveNextAsync())
+                {
+                    foreach (var doc in cursor.Current)
+                    {
+                        Console.WriteLine(doc);
+                    }
+                }
+            };
+
+        }
     }
 }
