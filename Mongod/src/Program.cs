@@ -35,8 +35,10 @@ namespace Mongod
             await collectionUsed.InsertManyAsync(docs);
 
             var result = await collectionUsed.ReplaceOneAsync(
-                new BsonDocument("x", 5), 
-                new BsonDocument("x", 30));
+                new BsonDocument("x", 10), 
+                new BsonDocument("x", 30),
+                new UpdateOptions { IsUpsert = true});
+                
 
             await collectionUsed.Find(new BsonDocument()).ForEachAsync(x => Console.WriteLine(x));
             
