@@ -16,7 +16,8 @@ namespace Mongod
         
         static void Main(string[] args)
         {
-            MainAsync(args).Wait();            
+            MainAsync(args).GetAwaiter().GetResult();
+            Console.ReadLine();
             Console.WriteLine("Press Enter!");
             Console.ReadLine();
         }
@@ -26,11 +27,11 @@ namespace Mongod
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("test");
-            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("people");
+            var collectionUsed = databaseUsed.GetCollection<Person>("people");
                       
             var list = await collectionUsed.Find(new BsonDocument())
-                //.Sort("{Age:1}")        .Sort(new BsonDocument("Age", 1))
-                .Sort(Builders<BsonDocument>.Sort.Descending("Age"))
+                .SortBy(x => x.Age)
+                //.ThenByDescending(x => x.Name)
                 .ToListAsync();
 
             foreach (var doc in list)
