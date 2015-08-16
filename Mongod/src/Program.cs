@@ -14,7 +14,6 @@ namespace Mongod
     class Program
     {
         
-
         static void Main(string[] args)
         {
             MainAsync(args).GetAwaiter().GetResult();
@@ -27,9 +26,18 @@ namespace Mongod
         {
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
-
             var databaseUsed = client.GetDatabase("test");
-            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("people");
+            var collectionUsed = databaseUsed.GetCollection<Person>("people");
+
+            var doc = new Person
+            {
+                Name = "Gerzson" ,
+                Age = 31,
+                Profession = "hacker"
+            };         
+
+            await collectionUsed.InsertOneAsync(doc);
+            
         }
 
        

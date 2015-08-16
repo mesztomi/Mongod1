@@ -15,10 +15,12 @@ namespace Mongod
 
         public int Age { get; set; }
 
-        public List<string> Colors { get; set; }
+        public string Profession { get; set; }
 
-        public List<Pet> Pets { get; set; }
+        //public List<string> Colors { get; set; }
 
-        public BsonDocument ExtraElements { get; set; }
+        //public List<Pet> Pets { get; set; }
+
+        //public BsonDocument ExtraElements { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,8 +39,34 @@ namespace Mongod.src
 
             Console.WriteLine(doc.Contains("name"));
 
-
             Console.WriteLine(doc);
+
+            //var doc2 = new BsonDocument
+            //{
+            //    { "Name", "Smith"},
+            //    {"Something", "something else" },
+            //    {"profession", "hacker" }
+            //};
+
+            //await collectionUsed.InsertManyAsync(new[] { doc, doc2 });
+        }
+
+        static async Task MainAsync2(string[] args)
+        {
+            var connectionString = "mongodb://localhost:27017";
+            var client = new MongoClient(connectionString);
+            var databaseUsed = client.GetDatabase("test");
+            var collectionUsed = databaseUsed.GetCollection<Person>("people");
+
+            var doc = new Person
+            {
+                Name = "Gerzson",
+                Age = 31,
+                Profession = "hacker"
+            };
+
+            await collectionUsed.InsertOneAsync(doc);
+
         }
     }
 }

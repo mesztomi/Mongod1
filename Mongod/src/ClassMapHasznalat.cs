@@ -24,9 +24,9 @@ namespace Mongod.src
             {
                 Name = "Jones",
                 Age = 34,
-                Colors = new List<string> { "red", "green" },
-                Pets = new List<Pet> { new Pet { Name = "Fluffy", Type = "Pig" } },
-                ExtraElements = new BsonDocument("anotherName", "anotherValue")
+                //Colors = new List<string> { "red", "green" },
+                //Pets = new List<Pet> { new Pet { Name = "Fluffy", Type = "Pig" } },
+                //ExtraElements = new BsonDocument("anotherName", "anotherValue")
             };
 
             using (var writer = new JsonWriter(Console.Out))
