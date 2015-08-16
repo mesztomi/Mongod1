@@ -29,7 +29,7 @@ namespace Mongod
             var collectionUsed = databaseUsed.GetCollection<BsonDocument>("people");
 
             var builder = Builders<BsonDocument>.Filter;
-            var filter = builder.And(builder.Lt("Age", 30), builder.Eq("Name", "Peter"));
+            var filter = builder.Lt("Age", 30) & builder.Eq("Name", "Peter");
 
             var list = await collectionUsed.Find(filter).ToListAsync();
 
