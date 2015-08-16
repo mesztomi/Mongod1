@@ -22,5 +22,10 @@ namespace Mongod
         //public List<Pet> Pets { get; set; }
 
         //public BsonDocument ExtraElements { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Id: {0}, Name: \"{1}\", Age: {2}, Profession: \"{3}\"", Id, Name, Age, Profession);
+        }
     }
 }

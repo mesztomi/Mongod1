@@ -26,19 +26,17 @@ namespace Mongod
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("test");
-            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("people");
+            var collectionUsed = databaseUsed.GetCollection<Person>("people");
 
-            var builder = Builders<BsonDocument>.Filter;
-            var filter = builder.Lt("Age", 30) & builder.Eq("Name", "Peter");
+            var builder = Builders<Person>.Filter;
+            var filter = builder.Lt(x => x.Age, 30) & builder.Eq(x => x.Name, "Peter");
 
             var list = await collectionUsed.Find(filter).ToListAsync();
 
             foreach (var doc in list)
             {
                 Console.WriteLine(doc);
-            }
-
-            //await collectionUsed.Find(new BsonDocument()).ForEachAsync(doc => Console.WriteLine(doc));          
+            }           
             
         }
 
