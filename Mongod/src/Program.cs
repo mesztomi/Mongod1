@@ -26,11 +26,11 @@ namespace Mongod
         {
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
-            var databaseUsed = client.GetDatabase("test");
-            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("widgets");
-            await databaseUsed.DropCollectionAsync("widgets");
-            var docs = Enumerable.Range(0, 10).Select(i => new BsonDocument("_id", i).Add("x", 1));
-            await collectionUsed.InsertManyAsync(docs);
+            var databaseUsed = client.GetDatabase("students");
+            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("grades");
+            
+            
+            
 
             var result = collectionUsed.BulkWriteAsync(new WriteModel<BsonDocument>[]
             {
