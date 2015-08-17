@@ -27,19 +27,17 @@ namespace Mongod
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("students");
-            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("grades");
-            
-            
-            
+            var collectionUsed = databaseUsed.GetCollection<Student>("grades");
 
-            var result = collectionUsed.BulkWriteAsync(new WriteModel<BsonDocument>[]
+            var list = await collectionUsed.Find(x => x.score >= 65  && x.type == "exam")
+                .Sort("{score: 1}")
+                .ToListAsync();
+
+            foreach (var doc in list)
             {
-                new DeleteOneModel<BsonDocument>("{x : 5}"),
-                new UpdateManyModel<BsonDocument>("{x: {$lt : 5}}", "{$inc: {x : 2}}")
-            });
-            
-            await collectionUsed.Find(new BsonDocument()).ForEachAsync(x => Console.WriteLine(x));
-            
+                Console.WriteLine(doc);
+            }
+
         }       
     }
 }
