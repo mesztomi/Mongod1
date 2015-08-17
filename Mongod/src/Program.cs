@@ -32,7 +32,10 @@ namespace Mongod
             var docs = Enumerable.Range(0, 10).Select(i => new Widget {Id = i, X = i });
             await collectionUsed.InsertManyAsync(docs);
 
-            var result = await collectionUsed.DeleteManyAsync(x => x.X > 5); //DeleteOne
+            var result = await collectionUsed.FindOneAndUpdateAsync(
+                x => x.X > 5,
+                Builders<Widget>.Update.Inc(x =>x.X, 1)
+                );
             
             await collectionUsed.Find(new BsonDocument()).ForEachAsync(x => Console.WriteLine(x));
             
