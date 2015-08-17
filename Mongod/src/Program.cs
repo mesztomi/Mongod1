@@ -37,7 +37,8 @@ namespace Mongod
                 Builders<Widget>.Update.Inc(x =>x.X, 1),
                 new FindOneAndUpdateOptions<Widget, Widget>
                 {
-                    ReturnDocument = ReturnDocument.After //Itt módosítom, hogy azzal a doksival térjen vissza, ami a módosítás után van.
+                    ReturnDocument = ReturnDocument.After, //Itt módosítom, hogy azzal a doksival térjen vissza, ami a módosítás után van.
+                    Sort = Builders<Widget>.Sort.Descending(x => x.X)//Itt állítom be, hogy a kollekciót honnan indítsa
                 }
                 );
             
