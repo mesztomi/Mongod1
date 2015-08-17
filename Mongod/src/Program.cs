@@ -8,6 +8,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
+using Mongod.src;
 
 namespace Mongod
 {
@@ -16,8 +17,7 @@ namespace Mongod
         
         static void Main(string[] args)
         {
-            MainAsync(args).GetAwaiter().GetResult();
-            
+            MainAsync(args).GetAwaiter().GetResult();            
             Console.WriteLine("Press Enter!");
             Console.ReadLine();
         }
@@ -27,23 +27,15 @@ namespace Mongod
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("test");
-            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("widgets");
+            var collectionUsed = databaseUsed.GetCollection<Widget>("widgets");
             await databaseUsed.DropCollectionAsync("widgets");
-
-            var docs = Enumerable.Range(0, 10).Select(i => new BsonDocument("_id", i).Add("x", i));
-
+            var docs = Enumerable.Range(0, 10).Select(i => new Widget {Id = i, X = i });
             await collectionUsed.InsertManyAsync(docs);
 
-            var result = await collectionUsed.UpdateOneAsync(
-                Builders<BsonDocument>.Filter.Eq("x", 5), 
-                Builders<BsonDocument>.Update.Inc("x", 15));
-                
-
+            var result = await collectionUsed.DeleteManyAsync(x => x.X > 5); //DeleteOne
+            
             await collectionUsed.Find(new BsonDocument()).ForEachAsync(x => Console.WriteLine(x));
             
-        }
-
-       
-        
+        }       
     }
 }
