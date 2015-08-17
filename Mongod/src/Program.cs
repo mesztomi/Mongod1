@@ -32,9 +32,13 @@ namespace Mongod
             var docs = Enumerable.Range(0, 10).Select(i => new Widget {Id = i, X = i });
             await collectionUsed.InsertManyAsync(docs);
 
-            var result = await collectionUsed.FindOneAndUpdateAsync(
+            var result = await collectionUsed.FindOneAndUpdateAsync<Widget>(
                 x => x.X > 5,
-                Builders<Widget>.Update.Inc(x =>x.X, 1)
+                Builders<Widget>.Update.Inc(x =>x.X, 1),
+                new FindOneAndUpdateOptions<Widget, Widget>
+                {
+                    ReturnDocument = ReturnDocument.After //Itt módosítom, hogy azzal a doksival térjen vissza, ami a módosítás után van.
+                }
                 );
             
             await collectionUsed.Find(new BsonDocument()).ForEachAsync(x => Console.WriteLine(x));
