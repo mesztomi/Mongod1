@@ -27,20 +27,16 @@ namespace Mongod
             var connectionString = "mongodb://localhost:27017";
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("test");
-            var collectionUsed = databaseUsed.GetCollection<Widget>("widgets");
+            var collectionUsed = databaseUsed.GetCollection<BsonDocument>("widgets");
             await databaseUsed.DropCollectionAsync("widgets");
-            var docs = Enumerable.Range(0, 10).Select(i => new Widget {Id = i, X = i });
+            var docs = Enumerable.Range(0, 10).Select(i => new BsonDocument("_id", i).Add("x", 1));
             await collectionUsed.InsertManyAsync(docs);
 
-            var result = await collectionUsed.FindOneAndUpdateAsync<Widget>(
-                x => x.X > 5,
-                Builders<Widget>.Update.Inc(x =>x.X, 1),
-                new FindOneAndUpdateOptions<Widget, Widget>
-                {
-                    ReturnDocument = ReturnDocument.After, //Itt módosítom, hogy azzal a doksival térjen vissza, ami a módosítás után van.
-                    Sort = Builders<Widget>.Sort.Descending(x => x.X)//Itt állítom be, hogy a kollekciót honnan indítsa
-                }
-                );
+            var result = collectionUsed.BulkWriteAsync(new WriteModel<BsonDocument>[]
+            {
+                new DeleteOneModel<BsonDocument>("{x : 5}"),
+                new UpdateManyModel<BsonDocument>("{x: {$lt : 5}}", "{$inc: {x : 2}}")
+            });
             
             await collectionUsed.Find(new BsonDocument()).ForEachAsync(x => Console.WriteLine(x));
             
