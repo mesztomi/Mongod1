@@ -17,7 +17,7 @@ namespace Mongod
         
         static void Main(string[] args)
         {
-            MainAsync(args).GetAwaiter().GetResult();            
+            MainAsync(args).Wait();            
             Console.WriteLine("Press Enter!");
             Console.ReadLine();
         }
@@ -28,16 +28,16 @@ namespace Mongod
             var client = new MongoClient(connectionString);
             var databaseUsed = client.GetDatabase("students");
             var collectionUsed = databaseUsed.GetCollection<Student>("grades");
-
+                      
             var list = await collectionUsed.Find(x => x.score >= 65  && x.type == "exam")
                 .Sort("{score: 1}")
                 .ToListAsync();
 
-            foreach (var doc in list)
-            {
-                Console.WriteLine(doc);
-            }
+            
+        }
 
-        }       
+       
+        
     }
+}
 }
